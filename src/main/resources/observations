@@ -1,0 +1,17 @@
+Fetching values:
+
+1. 1 million records - 3.83 seconds
+2. 0.46 million records - 1.35 seconds
+
+Processing files:
+
+Using Java 8 Stream API
+
+1. 30mb csv - 1.04 million records processed in 1.6 seconds
+2. 134mb csv - 0.46 million records in 1.6 seconds
+3. 500mb csv - 20 million records processed in 32 seconds
+4. 2.1gb csv - 10 million records processed in 24 seconds
+
+Using MappedByteBuffer API
+
+

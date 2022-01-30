@@ -7,14 +7,59 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.ByteBuffer;
+import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.stream.Stream;
 
 @Service
 @Slf4j
 public class FileService {
+
+    public void processFile() throws IOException {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        Stream<String> lines
+                = Files.lines(Paths.get("/Users/debashis/Documents/Documents and Notes/System Design/data-set/ml-20m/Parking_Violations_Issued_-_Fiscal_Year_2016.csv"));
+//        lines.forEach(System.out::println);
+        int count = 0;
+        for(String line : (Iterable<String>) lines::iterator )
+        {
+            System.out.println(line);
+            count++;
+        }
+
+        stopWatch.stop();
+
+        log.info("Response time: {}", stopWatch.getLastTaskTimeMillis());
+        log.info("Total processed records: {}", count);
+    }
+
+
+    public void processFileUsingMappedByteBuffer() throws IOException {
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
+        RandomAccessFile randomAccessFile = new RandomAccessFile("/Users/debashis/Documents/Documents and Notes/System Design/data-set/ml-20m/ratings.csv", "r");
+        FileChannel fileChannel = randomAccessFile.getChannel();
+
+        MappedByteBuffer mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
+        for(int i=0;i<mappedByteBuffer.limit();i++) {
+            byte read = mappedByteBuffer.get();
+
+            System.out.println(read);
+        }
+
+        randomAccessFile.close();
+
+        stopWatch.stop();
+        log.info("Response time: {}", stopWatch.getLastTaskTimeMillis());
+    }
 
     public long processFile(MultipartFile file) throws IOException {
         StopWatch stopWatch = new StopWatch();
